@@ -1,4 +1,6 @@
-﻿namespace SharedTrip
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace SharedTrip
 {
     using System.Collections.Generic;
 
@@ -9,7 +11,7 @@
     {
         public void Configure(IList<Route> routeTable)
         {
-           
+           new ApplicationDbContext().Database.Migrate();
         }
 
         public void ConfigureServices(IServiceCollection serviceCollection)
