@@ -14,32 +14,33 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SIS.MvcFramework\SIS.MvcFramework.csproj" />
+    <ProjectReference Include="..\SUS.HTTP\SUS.HTTP.csproj" />
+    <ProjectReference Include="..\SUS.MvcFramework\SUS.MvcFramework.csproj" />
   </ItemGroup>
   
   <ItemGroup>
-    <None Update="Views\Home\Index.html">
+    <None Update="Views\Home\Index.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Shared\Error.html">
+    <None Update="Views\Shared\Error.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Shared\_Layout.html">
+    <None Update="Views\Shared\_Layout.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Trips\Add.html">
+    <None Update="Views\Trips\Add.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Trips\All.html">
+    <None Update="Views\Trips\All.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Trips\Details.html">
+    <None Update="Views\Trips\Details.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Users\Login.html">
+    <None Update="Views\Users\Login.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Views\Users\Register.html">
+    <None Update="Views\Users\Register.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="wwwroot\css\bootstrap-grid.css">

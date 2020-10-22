@@ -1,22 +1,23 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SharedTrip.Services;
 
 namespace SharedTrip
 {
     using System.Collections.Generic;
 
-    using SIS.HTTP;
-    using SIS.MvcFramework;
+    using SUS.HTTP;
+    using SUS.MvcFramework;
 
     public class Startup : IMvcApplication
     {
-        public void Configure(IList<Route> routeTable)
-        {
-           new ApplicationDbContext().Database.Migrate();
-        }
-
         public void ConfigureServices(IServiceCollection serviceCollection)
         {
-            
+            serviceCollection.Add<IUsersService, UsersService>();
+        }
+
+        public void Configure(List<Route> routeTable)
+        {
+            new ApplicationDbContext().Database.Migrate();
         }
     }
 }

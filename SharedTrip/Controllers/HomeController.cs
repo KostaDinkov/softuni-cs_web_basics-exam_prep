@@ -1,7 +1,9 @@
-﻿namespace SharedTrip.App.Controllers
+﻿using SUS.MvcFramework;
+
+namespace SharedTrip.App.Controllers
 {
-    using SIS.HTTP;
-    using SIS.MvcFramework;
+    using SUS.HTTP;
+    using SUS.MvcFramework;
 
     public class HomeController : Controller
     { 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -18,7 +17,7 @@ namespace SharedTrip.Models
         public string StartPoint { get; set; }
 
         [Required]
-        public string EndPoing { get; set; }
+        public string EndPoint { get; set; }
 
         [Required]
         public DateTime DepartureTime { get; set; }
