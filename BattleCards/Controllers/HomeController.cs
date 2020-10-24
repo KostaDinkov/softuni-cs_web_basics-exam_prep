@@ -10,5 +10,14 @@
         {
             return this.View();
         }
+        [HttpGet("/Logout")]
+        public HttpResponse Logout()
+        {
+            if (IsUserSignedIn())
+            {
+                SignOut();
+            }
+            return Redirect("/");
+        }
     }
 }
