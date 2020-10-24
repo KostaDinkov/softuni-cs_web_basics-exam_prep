@@ -21,7 +21,9 @@ namespace SharedTrip.Services
         }
         public IList<Trip> GetAll()
         {
-            return db.Trips.ToList();
+            var trips = db.Trips.Include(x => x.UserTrips).ToList();
+
+            return trips.Select(x => { x.Seats = (byte)(x.Seats - x.UserTrips.Count); return x; }).ToList();
         }
 
         [HttpPost]
