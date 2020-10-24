@@ -39,14 +39,38 @@ namespace SharedTrip.Controllers
             return View();
         }
 
-        public HttpResponse Details()
+        public HttpResponse Details(string tripId)
         {
             if (!IsUserSignedIn())
             {
                 return Redirect("/Users/Login");
             }
-            return View()
+
+            var detailsViewModel = tripsService.GetDetails(tripId);
+            return View(detailsViewModel);
         }
+        
+        public HttpResponse AddUserToTrip(string tripId)
+        {
+            if (!IsUserSignedIn())
+            {
+                return Redirect("/Users/Login");
+            }
+
+            var userId = GetUserId();
+            try
+            {
+                tripsService.AddUserToTrip(userId, tripId);
+                return Redirect("/Trips/All");
+            }
+            catch (InvalidOperationException e)
+            {
+                return Error(e.Message);
+
+            }
+        }
+
+
 
         [HttpPost]
         public HttpResponse Add(AddTripInputModel input)

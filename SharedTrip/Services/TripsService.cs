@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using SharedTrip.Models;
 using SharedTrip.Validation;
 using SharedTrip.ViewModels.Trips;
@@ -47,6 +48,48 @@ namespace SharedTrip.Services
 
             throw new InputValidationException(validationResult.Errors);
 
+        }
+
+        public TripDetailsViewModel GetDetails(string tripId)
+        {
+            var trip = db.Trips.Include(x => x.UserTrips).FirstOrDefault(x => x.Id == tripId);
+            
+            return new TripDetailsViewModel()
+            {
+                Id= trip.Id,
+                StartPoint = trip.StartPoint,
+                EndPoint = trip.EndPoint,
+                Seats = (byte)(trip.Seats-trip.UserTrips.Count),
+                Description = trip.Description,
+                ImagePath = trip.ImagePath,
+                DepartureTime = trip.DepartureTime
+            };
+
+        }
+
+        public void AddUserToTrip(string userId, string tripId)
+        {
+            var isUserInTrip = db.UserTrips.Any(x => x.UserId == userId && x.TripId == tripId);
+            if (isUserInTrip)
+            {
+                throw new InvalidOperationException("User already in trip.");
+            }
+
+            var trip = db.Trips.Find(tripId);
+            var isSeatAvailable = (trip.Seats - trip.UserTrips.Count) > 0;
+            if (!isSeatAvailable)
+            {
+                throw new InvalidOperationException("No available seats.");
+            }
+            var userTrip = new UserTrip()
+            {
+                UserId = userId,
+                TripId = tripId,
+            };
+
+            db.UserTrips.Add(userTrip);
+            db.SaveChanges();
+            
         }
 
         private IValidationResult ValidateAddTripInput(AddTripInputModel model)
