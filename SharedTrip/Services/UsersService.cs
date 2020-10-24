@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using SharedTrip.Models;
+using SharedTrip.Validation;
+using SharedTrip.ViewModels.Users;
+
 
 namespace SharedTrip.Services
 {
@@ -15,6 +16,7 @@ namespace SharedTrip.Services
         {
             this.db = db;
         }
+        
         public string GetUserId(string username, string password)
         {
             var hashedPassword = ComputeHash(password);
@@ -23,24 +25,64 @@ namespace SharedTrip.Services
 
         }
         
-        public string Create(string username, string password, string email)
+        public string Create(RegisterInputModel input)
         {
-            var hashedPassword = ComputeHash(password);
-            var newUser = new User() {Email = email, Password = hashedPassword, Username = username};
-            db.Users.Add(newUser);
-            db.SaveChanges();
-            return newUser.Id;
+            var validationResult = ValidateRegisterInput(input);
+            if (validationResult.IsValid)
+            {
+                input.Password = ComputeHash(input.Password);
+                var newUser = new User() { Email = input.Email, Password = input.Password, Username = input.Username };
+                db.Users.Add(newUser);
+                db.SaveChanges();
+                return newUser.Id;
+            }
+            else
+            {
+                throw new InputValidationException(validationResult.Errors);
+            }
+
+            
         }
 
-        public bool IsUsernameAvailable(string username)
+        private  IValidationResult ValidateRegisterInput(RegisterInputModel model)
         {
-            return !db.Users.Any(u => u.Username == username);
+            var result = new ValidationResult { IsValid = true };
+            if (model.Username.Length < 5)
+            {
+                result.Errors.Add("Username must be between 5 and 20 characters long.");
+                result.IsValid = false;
+            }
+
+            if (!RegexUtilities.IsValidEmail(model.Email))
+            {
+                result.Errors.Add("Email is not valid.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Password))
+            {
+                result.Errors.Add("Password cannot be empty.");
+                result.IsValid = false;
+            }
+            if (model.Password != model.ConfirmPassword)
+            {
+                result.Errors.Add("Passwords do not match.");
+                result.IsValid = false;
+            }
+
+            if (db.Users.Any(u => u.Email == model.Email))
+            {
+                result.Errors.Add("Email not available.");
+                result.IsValid = false;
+            }
+
+            if (db.Users.Any(u => u.Username == model.Username))
+            {
+                result.Errors.Add("Username not available.");
+                result.IsValid = false;
+            }
+
+            return result;
         }
 
-        public bool IsEmailAvailable(string email)
-        {
-            return !db.Users.Any(u => u.Email == email);
-        }
 
         private static string ComputeHash(string input)
         {

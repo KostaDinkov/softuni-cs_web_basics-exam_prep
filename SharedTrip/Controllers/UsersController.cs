@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using SharedTrip.Services;
+﻿using SharedTrip.Services;
+using SharedTrip.Validation;
 using SharedTrip.ViewModels.Users;
 using SUS.HTTP;
 using SUS.MvcFramework;
-using SUS.MvcFramework.ViewEngine;
+
+
 
 namespace SharedTrip.Controllers
 {
@@ -14,10 +12,12 @@ namespace SharedTrip.Controllers
     {
 
         private readonly UsersService usersService;
+        private readonly ApplicationDbContext db;
 
-        public UsersController(UsersService usersService)
+        public UsersController(UsersService usersService, ApplicationDbContext db)
         {
             this.usersService = usersService;
+            this.db = db;
         }
 
         public HttpResponse Login()
@@ -43,7 +43,7 @@ namespace SharedTrip.Controllers
             {
                 return this.Error("Invalid username or password");
             }
-            
+
             this.SignIn(userId);
             return this.Redirect("/Trips/All");
         }
@@ -57,28 +57,27 @@ namespace SharedTrip.Controllers
         public HttpResponse Register(RegisterInputModel input)
         {
 
-            if (input.Password != input.ConfirmPassword)
+            try
             {
-                return this.Error("Passwords must match");
+                var userId = usersService.Create(input);
+                this.SignIn(userId);
+                return Redirect("/Trips/All");
             }
-
-            if (!usersService.IsEmailAvailable(input.Email))
+            catch (InputValidationException e)
             {
-                return this.Error("Email not available");
+                return this.Error(e.ToHtmlString());
             }
-
-            if (!usersService.IsUsernameAvailable(input.Username))
-            {
-                return this.Error("Username not available");
-            }
-
-            var userId = usersService.Create(input.Username, input.Password, input.Email);
-            
-            this.SignIn(userId);
-            
-            return Redirect("/Trips/All");
         }
+      
 
-        
+        public HttpResponse Logout()
+        {
+            if (!IsUserSignedIn())
+            {
+                return Redirect("/Users/Login");
+            }
+            SignOut();
+            return Redirect("/");
+        }
     }
 }

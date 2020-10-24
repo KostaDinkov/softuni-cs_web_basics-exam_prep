@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SharedTrip.ViewModels.Users
 {
-    class RegisterInputModel
+    public class RegisterInputModel
     {
         public string Username { get; set; }
         public string Password { get; set; }

@@ -10,8 +10,8 @@ using SharedTrip;
 namespace SharedTrip.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201022204518_init")]
-    partial class init
+    [Migration("20201024075940_RemovePasswordMaxLength")]
+    partial class RemovePasswordMaxLength
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -31,7 +31,7 @@ namespace SharedTrip.Migrations
                     Id = table.Column<string>(nullable: false),
                     Username = table.Column<string>(maxLength: 20, nullable: false),
                     Email = table.Column<string>(nullable: false),
-                    Password = table.Column<string>(nullable: false)
+                    Password = table.Column<string>(maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
